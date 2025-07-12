@@ -129,8 +129,6 @@ day,month,date_str,month_name,anniversary_score,years_in_block,avg_block_length,
 - **2 gün mesafede** (Sal/Per): 1 puan
 - **Diğer**: 0 puan
 
-## 🎯 Örnek Sonuçlar
-
 ## 🎯 Seçenek Kategorileri
 
 ### 🏆 "Kolay Seçenekler" (Resmî Tatiller)
