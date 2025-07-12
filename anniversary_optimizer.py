@@ -388,44 +388,63 @@ class AnniversaryOptimizer:
         fig.write_html(filename)
         return fig
     
+    def is_official_holiday(self, day, month):
+        """Verilen tarih resmi tatil mi kontrol et"""
+        official_dates = {
+            (1, 1): "Yılbaşı",
+            (4, 23): "Ulusal Egemenlik ve Çocuk Bayramı",
+            (5, 1): "Emek ve Dayanışma Günü",
+            (5, 19): "Atatürk'ü Anma Gençlik ve Spor Bayramı",
+            (7, 15): "Demokrasi ve Millî Birlik Günü",
+            (8, 30): "Zafer Bayramı",
+            (10, 29): "Cumhuriyet Bayramı"
+        }
+        return (month, day) in official_dates
+
+    def filter_non_official_holidays(self, candidates):
+        """Resmi tatilleri filtrele"""
+        non_official = []
+        official_filtered = []
+        for candidate in candidates:
+            if self.is_official_holiday(candidate['day'], candidate['month']):
+                official_filtered.append(candidate)
+            else:
+                non_official.append(candidate)
+        return non_official, official_filtered
+
     def generate_report(self, candidates):
         """Kapsamlı rapor oluştur"""
-        top_10 = candidates[:10]
-        
-        # İstatistikler
+        # Resmi tatilleri filtrele
+        non_official_candidates, official_candidates = self.filter_non_official_holidays(candidates)
+        top_10_non_official = non_official_candidates[:10]
         total_candidates = len(candidates)
         max_score = candidates[0]['anniversary_score']
         min_score = candidates[-1]['anniversary_score']
         avg_score = np.mean([c['anniversary_score'] for c in candidates])
-        
-        # Aylık performans
+        official_count = len(official_candidates)
         monthly_stats = defaultdict(list)
         for candidate in candidates:
             monthly_stats[candidate['month']].append(candidate['anniversary_score'])
-        
         monthly_avg = {month: np.mean(scores) for month, scores in monthly_stats.items()}
         best_months = sorted(monthly_avg.items(), key=lambda x: x[1], reverse=True)
-        
-        # Sezon analizi
         seasons = {
             'Kış': [12, 1, 2],
             'İlkbahar': [3, 4, 5],
             'Yaz': [6, 7, 8],
             'Sonbahar': [9, 10, 11]
         }
-        
         season_stats = {}
         for season, months in seasons.items():
             season_scores = [c['anniversary_score'] for c in candidates if c['month'] in months]
             season_stats[season] = np.mean(season_scores) if season_scores else 0
-        
-        # Rapor oluştur
         report = f"""# Anniversary Holiday Coverage Optimizer - Türkiye 2025-2074
 ## Kapsamlı Analiz Raporu
 
 ### 📊 Metodoloji ve Parametreler
 - **Analiz Dönemi**: {self.years[0]} - {self.years[-1]} ({len(self.years)} yıl)
 - **Toplam Analiz Edilen Tarih**: {total_candidates:,} farklı gün/ay kombinasyonu
+- **Resmi Tatil Filtrelemesi**: ✅ Top 10 seçiminde resmi tatiller hariç tutulmuştur
+- **Filtrelenen Resmi Tatil Sayısı**: {official_count} adet
 - **Köprü Politikası**: {self.bridge_policy}
 - **Şubat 29 Dahil**: {'Evet' if self.include_feb29 else 'Hayır'}
 - **Değerlendirme Kriterleri**: 
@@ -435,210 +454,177 @@ class AnniversaryOptimizer:
   - Diğer durumlar: {self.weights[3]} puan
 - **Maksimum Olası Skor**: {self.weights[0] * len(self.years)} puan
 
-### 🏆 En İyi 10 Tarih
+### 🏆 En İyi 10 Tarih (Resmi Tatiller Hariç)
+*Not: Resmi tatiller (23 Nisan, 19 Mayıs, 30 Ağustos, 29 Ekim vb.) bu sıralamada yer almamaktadır.*
 
 | Sıra | Tarih | Ay | Anniversary Score | Block İçi Yıl | Kapsam (%) | Verimlilik (%) | Ort. Block Uzunluğu |
 |------|-------|-----|------------------|----------------|------------|----------------|---------------------|
 """
-        
-        for i, candidate in enumerate(top_10, 1):
+        for i, candidate in enumerate(top_10_non_official, 1):
             report += f"| {i} | {candidate['date_str']} | {candidate['month_name']} | {candidate['anniversary_score']} | {candidate['years_in_block']} | {candidate['coverage_percent']:.1f}% | {candidate['efficiency_ratio']:.1f}% | {candidate['avg_block_length']:.1f} gün |\n"
-        
         report += f"""
 
-### 🥇 CHAMPION: {top_10[0]['date_str']} ({top_10[0]['month_name']})
-- **🏆 Anniversary Score**: {top_10[0]['anniversary_score']}/{self.weights[0] * len(self.years)} (%{top_10[0]['efficiency_ratio']:.1f} verimlilik)
-- **📅 Tatil bloğu içinde**: {top_10[0]['years_in_block']} yıl (50 yılın %{top_10[0]['coverage_percent']:.1f}'i)
-- **⏱️ Ortalama tatil uzunluğu**: {top_10[0]['avg_block_length']:.1f} gün
+### 🥇 CHAMPION: {top_10_non_official[0]['date_str']} ({top_10_non_official[0]['month_name']})
+*Resmi tatil olmayan en iyi tarih*
+- **🏆 Anniversary Score**: {top_10_non_official[0]['anniversary_score']}/{self.weights[0] * len(self.years)} (%{top_10_non_official[0]['efficiency_ratio']:.1f} verimlilik)
+- **📅 Tatil bloğu içinde**: {top_10_non_official[0]['years_in_block']} yıl (50 yılın %{top_10_non_official[0]['coverage_percent']:.1f}'i)
+- **⏱️ Ortalama tatil uzunluğu**: {top_10_non_official[0]['avg_block_length']:.1f} gün
 - **📊 Skor Detayları**: 
-  - Block içinde: {top_10[0]['score_details']['in_block']} yıl
-  - 1 gün mesafede: {top_10[0]['score_details']['one_day_away']} yıl
-  - 2 gün mesafede: {top_10[0]['score_details']['two_days_away']} yıl
-  - Diğer: {top_10[0]['score_details']['other']} yıl
-- **🎯 Tavsiye**: En yüksek skor! 50 yıllık süreçte en fazla uzun tatil garantisi.
+  - Block içinde: {top_10_non_official[0]['score_details']['in_block']} yıl
+  - 1 gün mesafede: {top_10_non_official[0]['score_details']['one_day_away']} yıl
+  - 2 gün mesafede: {top_10_non_official[0]['score_details']['two_days_away']} yıl
+  - Diğer: {top_10_non_official[0]['score_details']['other']} yıl
+- **🎯 Tavsiye**: Resmi tatil olmayan en optimal tarih! 50 yıllık süreçte en fazla uzun tatil garantisi.
 
-### 🥈 RUNNER-UP: {top_10[1]['date_str']} ({top_10[1]['month_name']})
-- **🏆 Anniversary Score**: {top_10[1]['anniversary_score']}/{self.weights[0] * len(self.years)} (%{top_10[1]['efficiency_ratio']:.1f} verimlilik)
-- **📅 Tatil bloğu içinde**: {top_10[1]['years_in_block']} yıl (50 yılın %{top_10[1]['coverage_percent']:.1f}'i)
-- **⏱️ Ortalama tatil uzunluğu**: {top_10[1]['avg_block_length']:.1f} gün
+### 🥈 RUNNER-UP: {top_10_non_official[1]['date_str']} ({top_10_non_official[1]['month_name']})
+*İkinci en iyi seçenek*
+- **🏆 Anniversary Score**: {top_10_non_official[1]['anniversary_score']}/{self.weights[0] * len(self.years)} (%{top_10_non_official[1]['efficiency_ratio']:.1f} verimlilik)
+- **📅 Tatil bloğu içinde**: {top_10_non_official[1]['years_in_block']} yıl (50 yılın %{top_10_non_official[1]['coverage_percent']:.1f}'i)
+- **⏱️ Ortalama tatil uzunluğu**: {top_10_non_official[1]['avg_block_length']:.1f} gün
 - **🎯 Tavsiye**: Güçlü alternatif seçenek.
 
-### 🥉 THIRD PLACE: {top_10[2]['date_str']} ({top_10[2]['month_name']})
-- **🏆 Anniversary Score**: {top_10[2]['anniversary_score']}/{self.weights[0] * len(self.years)} (%{top_10[2]['efficiency_ratio']:.1f} verimlilik)
-- **📅 Tatil bloğu içinde**: {top_10[2]['years_in_block']} yıl (50 yılın %{top_10[2]['coverage_percent']:.1f}'i)
-- **⏱️ Ortalama tatil uzunluğu**: {top_10[2]['avg_block_length']:.1f} gün
+### 🥉 THIRD PLACE: {top_10_non_official[2]['date_str']} ({top_10_non_official[2]['month_name']})
+*Üçüncü en iyi seçenek*
+- **🏆 Anniversary Score**: {top_10_non_official[2]['anniversary_score']}/{self.weights[0] * len(self.years)} (%{top_10_non_official[2]['efficiency_ratio']:.1f} verimlilik)
+- **📅 Tatil bloğu içinde**: {top_10_non_official[2]['years_in_block']} yıl (50 yılın %{top_10_non_official[2]['coverage_percent']:.1f}'i)
+- **⏱️ Ortalama tatil uzunluğu**: {top_10_non_official[2]['avg_block_length']:.1f} gün
 - **🎯 Tavsiye**: Sağlam üçüncü seçenek.
 
 ### 📊 Aylık Performans Sıralaması
+*Tüm tarihlerin (resmi tatiller dahil) aylık ortalama performansı*
 """
-        
         for i, (month, avg_score) in enumerate(best_months, 1):
             month_name = calendar.month_name[month]
             report += f"{i:2d}. **{month_name}**: {avg_score:.1f} ortalama puan\n"
-        
-        report += f"""
-
-### 🌍 Mevsimsel Analiz
-"""
-        
-        season_ranking = sorted(season_stats.items(), key=lambda x: x[1], reverse=True)
-        for i, (season, avg_score) in enumerate(season_ranking, 1):
-            report += f"{i}. **{season}**: {avg_score:.1f} ortalama puan\n"
-        
         report += f"""
 
 ### 🎯 Özel Durumlar ve Tavsiyeler
 
-#### 🏖️ Yaz Tatili Sevenler İçin
+#### 🏖️ Yaz Tatili Sevenler İçin (Resmi Tatiller Hariç)
 En iyi yaz tarihleri:
 """
-        
-        summer_dates = [c for c in candidates if c['month'] in [6, 7, 8]][:5]
+        summer_dates = [c for c in non_official_candidates if c['month'] in [6, 7, 8]][:5]
         for i, candidate in enumerate(summer_dates, 1):
             report += f"- {candidate['date_str']} ({candidate['month_name']}) - {candidate['anniversary_score']} puan\n"
-        
         report += f"""
 
-#### 🌸 İlkbahar Önerileri
+#### 🌸 İlkbahar Önerileri (Resmi Tatiller Hariç)
 En iyi ilkbahar tarihleri:
 """
-        
-        spring_dates = [c for c in candidates if c['month'] in [3, 4, 5]][:5]
+        spring_dates = [c for c in non_official_candidates if c['month'] in [3, 4, 5]][:5]
         for i, candidate in enumerate(spring_dates, 1):
             report += f"- {candidate['date_str']} ({candidate['month_name']}) - {candidate['anniversary_score']} puan\n"
-        
         report += f"""
 
-#### 🍂 Sonbahar Alternatifi
+#### 🍂 Sonbahar Alternatifi (Resmi Tatiller Hariç)
 En iyi sonbahar tarihleri:
 """
-        
-        autumn_dates = [c for c in candidates if c['month'] in [9, 10, 11]][:5]
+        autumn_dates = [c for c in non_official_candidates if c['month'] in [9, 10, 11]][:5]
         for i, candidate in enumerate(autumn_dates, 1):
             report += f"- {candidate['date_str']} ({candidate['month_name']}) - {candidate['anniversary_score']} puan\n"
-        
         report += f"""
 
-#### ❄️ Kış Seçenekleri
+#### ❄️ Kış Seçenekleri (Resmi Tatiller Hariç)
 En iyi kış tarihleri:
 """
-        
-        winter_dates = [c for c in candidates if c['month'] in [12, 1, 2]][:5]
+        winter_dates = [c for c in non_official_candidates if c['month'] in [12, 1, 2]][:5]
         for i, candidate in enumerate(winter_dates, 1):
             report += f"- {candidate['date_str']} ({candidate['month_name']}) - {candidate['anniversary_score']} puan\n"
-        
         report += f"""
-
-### ⚠️ Önemli Notlar ve Uyarılar
-
-#### 🕌 Dinî Bayramlar
-- Ramazan ve Kurban bayramları hijri takvime göre her yıl 11 gün öne kayar
-- Hesaplamalarda ±1 gün sapma olabilir
-- Dinî bayram dönemlerinde uzun tatil imkanı artar
-
-#### 💰 Maliyet Faktörleri
-- Yaz ayları (Haziran-Ağustos) turizm maliyetleri yüksek
-- Kurban Bayramı döneminde yurt içi turizm yoğun
-- Şubat-Mart arası düşük sezon, daha ekonomik
-
-#### 🏨 Rezervasyon Stratejileri
-- Yüksek skorlu tarihlerde erken rezervasyon önemli
-- Popüler tatil bölgelerinde alternatif planlar hazırlanmalı
-- Köprü tatillerinde trafik yoğunluğu beklenebilir
 
 ### 📈 İstatistiksel Özetler
 
+- **Toplam analiz edilen tarih**: {total_candidates} adet
+- **Resmi tatil sayısı**: {official_count} adet
+- **Resmi tatil olmayan tarih sayısı**: {len(non_official_candidates)} adet
 - **En yüksek skor**: {max_score} puan
 - **En düşük skor**: {min_score} puan  
 - **Ortalama skor**: {avg_score:.1f} puan
 - **100+ puan alan tarih sayısı**: {len([c for c in candidates if c['anniversary_score'] >= 100])} adet
 - **50+ puan alan tarih sayısı**: {len([c for c in candidates if c['anniversary_score'] >= 50])} adet
+- **Resmi tatil olmayan 100+ puan**: {len([c for c in non_official_candidates if c['anniversary_score'] >= 100])} adet
 
 ### 🎊 Sonuç ve Nihai Tavsiye
 
-**🏆 WINNER: {candidates[0]['date_str']} ({candidates[0]['month_name']})**
+**🏆 WINNER: {non_official_candidates[0]['date_str']} ({non_official_candidates[0]['month_name']})**
+*Resmi tatil olmayan en optimal tarih*
 
 Bu tarih, 50 yıllık süreçte en fazla uzun tatil garantisi sunan optimal seçimdir. 
-{candidates[0]['years_in_block']} yıl boyunca extended holiday block içinde yer alarak,
-ortalama {candidates[0]['avg_block_length']:.1f} günlük tatil imkanı sağlamaktadır.
+{non_official_candidates[0]['years_in_block']} yıl boyunca extended holiday block içinde yer alarak,
+ortalama {non_official_candidates[0]['avg_block_length']:.1f} günlük tatil imkanı sağlamaktadır.
 
-**Alternatif seçenekler**: {candidates[1]['date_str']} ve {candidates[2]['date_str']} tarihleri de güçlü alternatiflerdir.
+**Alternatif seçenekler**: {non_official_candidates[1]['date_str']} ve {non_official_candidates[2]['date_str']} tarihleri de güçlü alternatiflerdir.
+
+**Resmi tatil seçenekleri**: Eğer resmi tatil tarihi tercih edilirse, en iyi seçenekler:
+- {candidates[0]['date_str']} ({candidates[0]['month_name']}) - {candidates[0]['anniversary_score']} puan
+- {candidates[1]['date_str']} ({candidates[1]['month_name']}) - {candidates[1]['anniversary_score']} puan
 
 *"Aşkın en güzel günü, her yıl en uzun tatille kutlansın!" 💕*
 
 ---
 *Rapor oluşturma tarihi: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}*
 """
-        
-        return report, top_10
+        return report, top_10_non_official
 
 def main():
     """Ana program"""
     print("🚀 Anniversary Holiday Coverage Optimizer başlatılıyor...")
-    
-    # Optimizer'ı başlat
     optimizer = AnniversaryOptimizer(
         years_range=(2025, 2075), 
         weights=(4, 2, 1, 0),
         bridge_policy="public_sector",
         include_feb29=False
     )
-    
     print("Tarih kombinasyonları analiz ediliyor...")
     candidates = optimizer.optimize()
-    
+    print("Resmi tatiller filtreleniyor...")
+    non_official_candidates, official_candidates = optimizer.filter_non_official_holidays(candidates)
     print("Rapor oluşturuluyor...")
-    report, top_10 = optimizer.generate_report(candidates)
-    
+    report, top_10_non_official = optimizer.generate_report(candidates)
     print("Görselleştirme oluşturuluyor...")
     optimizer.generate_visualization(candidates)
-    
-    # Sonuçları kaydet
     df = pd.DataFrame(candidates)
     df.to_csv('anniversary_scores.csv', index=False)
-    
+    df_non_official = pd.DataFrame(non_official_candidates)
+    df_non_official.to_csv('anniversary_scores_non_official.csv', index=False)
     with open('anniversary_report.md', 'w', encoding='utf-8') as f:
         f.write(report)
-    
     print("\n" + "="*80)
     print("🎉 ANNIVERSARY HOLIDAY COVERAGE OPTIMIZER SONUÇLARI 🎉")
     print("="*80)
-    
     print(f"\n📈 Analiz İstatistikleri:")
     print(f"   • Toplam analiz edilen tarih: {len(candidates):,} adet")
+    print(f"   • Resmi tatil sayısı: {len(official_candidates)} adet")
+    print(f"   • Resmi tatil olmayan tarih: {len(non_official_candidates)} adet")
     print(f"   • En yüksek skor: {candidates[0]['anniversary_score']} puan")
     print(f"   • Ortalama skor: {np.mean([c['anniversary_score'] for c in candidates]):.1f} puan")
     print(f"   • 100+ puan alan tarih: {len([c for c in candidates if c['anniversary_score'] >= 100])} adet")
-    
-    print(f"\n🏆 TOP 10 SONUÇLARI:")
+    print(f"\n🏆 TOP 10 SONUÇLARI (Resmi Tatiller Hariç):")
     print(f"{'Sıra':<4} {'Tarih':<8} {'Ay':<10} {'Skor':<5} {'Block İçi':<10} {'Kapsam':<8} {'Verimlilik':<10}")
     print("-" * 70)
-    
-    for i, candidate in enumerate(top_10, 1):
+    for i, candidate in enumerate(top_10_non_official, 1):
         print(f"{i:<4} {candidate['date_str']:<8} {candidate['month_name'][:9]:<10} {candidate['anniversary_score']:<5} {candidate['years_in_block']:<10} {candidate['coverage_percent']:.1f}%{'':<3} {candidate['efficiency_ratio']:.1f}%")
-    
-    print(f"\n🥇 CHAMPION: {candidates[0]['date_str']} ({candidates[0]['month_name']})")
-    print(f"   🏆 Anniversary Score: {candidates[0]['anniversary_score']}/200 (%{candidates[0]['efficiency_ratio']:.1f} verimlilik)")
-    print(f"   📅 Tatil bloğu içinde: {candidates[0]['years_in_block']} yıl (%{candidates[0]['coverage_percent']:.1f} kapsam)")
-    print(f"   ⏱️ Ortalama tatil uzunluğu: {candidates[0]['avg_block_length']:.1f} gün")
-    
+    print(f"\n🥇 CHAMPION: {non_official_candidates[0]['date_str']} ({non_official_candidates[0]['month_name']})")
+    print(f"   🏆 Anniversary Score: {non_official_candidates[0]['anniversary_score']}/200 (%{non_official_candidates[0]['efficiency_ratio']:.1f} verimlilik)")
+    print(f"   📅 Tatil bloğu içinde: {non_official_candidates[0]['years_in_block']} yıl (%{non_official_candidates[0]['coverage_percent']:.1f} kapsam)")
+    print(f"   ⏱️ Ortalama tatil uzunluğu: {non_official_candidates[0]['avg_block_length']:.1f} gün")
+    print(f"   ⚠️ Resmi tatil değil")
     print(f"\n💡 Hızlı Tavsiyeler:")
-    print(f"   • En garantili seçim: {candidates[0]['date_str']} ({candidates[0]['month_name']})")
-    print(f"   • Alternatif seçenekler: {candidates[1]['date_str']}, {candidates[2]['date_str']}")
-    
-    summer_best = [c for c in candidates if c['month'] in [6,7,8]][:3]
+    print(f"   • En garantili seçim: {non_official_candidates[0]['date_str']} ({non_official_candidates[0]['month_name']})")
+    print(f"   • Alternatif seçenekler: {non_official_candidates[1]['date_str']}, {non_official_candidates[2]['date_str']}")
+    if official_candidates:
+        print(f"   • En iyi resmi tatil: {official_candidates[0]['date_str']} ({official_candidates[0]['month_name']})")
+    summer_best = [c for c in non_official_candidates if c['month'] in [6,7,8]][:3]
     if summer_best:
         print(f"   • Yaz sevenler için: {[c['date_str'] for c in summer_best]}")
-    
-    winter_best = [c for c in candidates if c['month'] in [2,3,11]][:3]
+    winter_best = [c for c in non_official_candidates if c['month'] in [2,3,11]][:3]
     if winter_best:
         print(f"   • Ekonomik seçenekler: {[c['date_str'] for c in winter_best]}")
-    
     print(f"\n📝 Dosyalar oluşturuldu:")
-    print(f"   📊 anniversary_scores.csv")
+    print(f"   📊 anniversary_scores.csv (tüm tarihler)")
+    print(f"   📊 anniversary_scores_non_official.csv (resmi tatiller hariç)")
     print(f"   📋 anniversary_report.md")
     print(f"   📈 anniversary_heatmap.html")
-    
     return candidates
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 ### 📊 Metodoloji ve Parametreler
 - **Analiz Dönemi**: 2025 - 2074 (50 yıl)
 - **Toplam Analiz Edilen Tarih**: 365 farklı gün/ay kombinasyonu
+- **Resmi Tatil Filtrelemesi**: ✅ Top 10 seçiminde resmi tatiller hariç tutulmuştur
+- **Filtrelenen Resmi Tatil Sayısı**: 7 adet
 - **Köprü Politikası**: public_sector
 - **Şubat 29 Dahil**: Hayır
 - **Değerlendirme Kriterleri**: 
@@ -13,46 +15,51 @@
   - Diğer durumlar: 0 puan
 - **Maksimum Olası Skor**: 200 puan
 
-### 🏆 En İyi 10 Tarih
+### 🏆 En İyi 10 Tarih (Resmi Tatiller Hariç)
+*Not: Resmi tatiller (23 Nisan, 19 Mayıs, 30 Ağustos, 29 Ekim vb.) bu sıralamada yer almamaktadır.*
 
 | Sıra | Tarih | Ay | Anniversary Score | Block İçi Yıl | Kapsam (%) | Verimlilik (%) | Ort. Block Uzunluğu |
 |------|-------|-----|------------------|----------------|------------|----------------|---------------------|
-| 1 | 01/01 | January | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 2 | 23/04 | April | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 3 | 01/05 | May | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 4 | 19/05 | May | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 5 | 15/07 | July | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 6 | 30/08 | August | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 7 | 29/10 | October | 200 | 50 | 100.0% | 100.0% | 20.8 gün |
-| 8 | 14/07 | July | 82 | 17 | 34.0% | 41.0% | 20.1 gün |
-| 9 | 30/04 | April | 76 | 16 | 32.0% | 38.0% | 20.7 gün |
-| 10 | 02/01 | January | 74 | 15 | 30.0% | 37.0% | 21.7 gün |
+| 1 | 14/07 | July | 82 | 17 | 34.0% | 41.0% | 20.1 gün |
+| 2 | 30/04 | April | 76 | 16 | 32.0% | 38.0% | 20.7 gün |
+| 3 | 02/01 | January | 74 | 15 | 30.0% | 37.0% | 21.7 gün |
+| 4 | 02/05 | May | 74 | 15 | 30.0% | 37.0% | 21.7 gün |
+| 5 | 31/08 | August | 74 | 15 | 30.0% | 37.0% | 21.7 gün |
+| 6 | 20/05 | May | 72 | 15 | 30.0% | 36.0% | 20.3 gün |
+| 7 | 16/07 | July | 72 | 14 | 28.0% | 36.0% | 19.2 gün |
+| 8 | 29/08 | August | 72 | 14 | 28.0% | 36.0% | 22.9 gün |
+| 9 | 24/04 | April | 70 | 14 | 28.0% | 35.0% | 21.8 gün |
+| 10 | 30/10 | October | 70 | 14 | 28.0% | 35.0% | 21.8 gün |
 
 
-### 🥇 CHAMPION: 01/01 (January)
-- **🏆 Anniversary Score**: 200/200 (%100.0 verimlilik)
-- **📅 Tatil bloğu içinde**: 50 yıl (50 yılın %100.0'i)
-- **⏱️ Ortalama tatil uzunluğu**: 20.8 gün
+### 🥇 CHAMPION: 14/07 (July)
+*Resmi tatil olmayan en iyi tarih*
+- **🏆 Anniversary Score**: 82/200 (%41.0 verimlilik)
+- **📅 Tatil bloğu içinde**: 17 yıl (50 yılın %34.0'i)
+- **⏱️ Ortalama tatil uzunluğu**: 20.1 gün
 - **📊 Skor Detayları**: 
-  - Block içinde: 50 yıl
-  - 1 gün mesafede: 0 yıl
+  - Block içinde: 17 yıl
+  - 1 gün mesafede: 7 yıl
   - 2 gün mesafede: 0 yıl
-  - Diğer: 0 yıl
-- **🎯 Tavsiye**: En yüksek skor! 50 yıllık süreçte en fazla uzun tatil garantisi.
+  - Diğer: 26 yıl
+- **🎯 Tavsiye**: Resmi tatil olmayan en optimal tarih! 50 yıllık süreçte en fazla uzun tatil garantisi.
 
-### 🥈 RUNNER-UP: 23/04 (April)
-- **🏆 Anniversary Score**: 200/200 (%100.0 verimlilik)
-- **📅 Tatil bloğu içinde**: 50 yıl (50 yılın %100.0'i)
-- **⏱️ Ortalama tatil uzunluğu**: 20.8 gün
+### 🥈 RUNNER-UP: 30/04 (April)
+*İkinci en iyi seçenek*
+- **🏆 Anniversary Score**: 76/200 (%38.0 verimlilik)
+- **📅 Tatil bloğu içinde**: 16 yıl (50 yılın %32.0'i)
+- **⏱️ Ortalama tatil uzunluğu**: 20.7 gün
 - **🎯 Tavsiye**: Güçlü alternatif seçenek.
 
-### 🥉 THIRD PLACE: 01/05 (May)
-- **🏆 Anniversary Score**: 200/200 (%100.0 verimlilik)
-- **📅 Tatil bloğu içinde**: 50 yıl (50 yılın %100.0'i)
-- **⏱️ Ortalama tatil uzunluğu**: 20.8 gün
+### 🥉 THIRD PLACE: 02/01 (January)
+*Üçüncü en iyi seçenek*
+- **🏆 Anniversary Score**: 74/200 (%37.0 verimlilik)
+- **📅 Tatil bloğu içinde**: 15 yıl (50 yılın %30.0'i)
+- **⏱️ Ortalama tatil uzunluğu**: 21.7 gün
 - **🎯 Tavsiye**: Sağlam üçüncü seçenek.
 
 ### 📊 Aylık Performans Sıralaması
+*Tüm tarihlerin (resmi tatiller dahil) aylık ortalama performansı*
  1. **May**: 36.6 ortalama puan
  2. **April**: 24.0 ortalama puan
  3. **July**: 23.7 ortalama puan
@@ -67,87 +74,72 @@
 12. **March**: 0.0 ortalama puan
 
 
-### 🌍 Mevsimsel Analiz
-1. **İlkbahar**: 20.2 ortalama puan
-2. **Sonbahar**: 14.7 ortalama puan
-3. **Yaz**: 14.1 ortalama puan
-4. **Kış**: 8.4 ortalama puan
-
-
 ### 🎯 Özel Durumlar ve Tavsiyeler
 
-#### 🏖️ Yaz Tatili Sevenler İçin
+#### 🏖️ Yaz Tatili Sevenler İçin (Resmi Tatiller Hariç)
 En iyi yaz tarihleri:
-- 15/07 (July) - 200 puan
-- 30/08 (August) - 200 puan
 - 14/07 (July) - 82 puan
 - 31/08 (August) - 74 puan
 - 16/07 (July) - 72 puan
+- 29/08 (August) - 72 puan
+- 17/07 (July) - 61 puan
 
 
-#### 🌸 İlkbahar Önerileri
+#### 🌸 İlkbahar Önerileri (Resmi Tatiller Hariç)
 En iyi ilkbahar tarihleri:
-- 23/04 (April) - 200 puan
-- 01/05 (May) - 200 puan
-- 19/05 (May) - 200 puan
 - 30/04 (April) - 76 puan
 - 02/05 (May) - 74 puan
+- 20/05 (May) - 72 puan
+- 24/04 (April) - 70 puan
+- 18/05 (May) - 68 puan
 
 
-#### 🍂 Sonbahar Alternatifi
+#### 🍂 Sonbahar Alternatifi (Resmi Tatiller Hariç)
 En iyi sonbahar tarihleri:
-- 29/10 (October) - 200 puan
 - 30/10 (October) - 70 puan
 - 28/10 (October) - 66 puan
 - 01/09 (September) - 64 puan
 - 31/10 (October) - 61 puan
+- 01/11 (November) - 54 puan
 
 
-#### ❄️ Kış Seçenekleri
+#### ❄️ Kış Seçenekleri (Resmi Tatiller Hariç)
 En iyi kış tarihleri:
-- 01/01 (January) - 200 puan
 - 02/01 (January) - 74 puan
 - 03/01 (January) - 60 puan
 - 04/01 (January) - 49 puan
 - 05/01 (January) - 49 puan
+- 06/01 (January) - 42 puan
 
-
-### ⚠️ Önemli Notlar ve Uyarılar
-
-#### 🕌 Dinî Bayramlar
-- Ramazan ve Kurban bayramları hijri takvime göre her yıl 11 gün öne kayar
-- Hesaplamalarda ±1 gün sapma olabilir
-- Dinî bayram dönemlerinde uzun tatil imkanı artar
-
-#### 💰 Maliyet Faktörleri
-- Yaz ayları (Haziran-Ağustos) turizm maliyetleri yüksek
-- Kurban Bayramı döneminde yurt içi turizm yoğun
-- Şubat-Mart arası düşük sezon, daha ekonomik
-
-#### 🏨 Rezervasyon Stratejileri
-- Yüksek skorlu tarihlerde erken rezervasyon önemli
-- Popüler tatil bölgelerinde alternatif planlar hazırlanmalı
-- Köprü tatillerinde trafik yoğunluğu beklenebilir
 
 ### 📈 İstatistiksel Özetler
 
+- **Toplam analiz edilen tarih**: 365 adet
+- **Resmi tatil sayısı**: 7 adet
+- **Resmi tatil olmayan tarih sayısı**: 358 adet
 - **En yüksek skor**: 200 puan
 - **En düşük skor**: 0 puan  
-- **Ortalama skor**: 8.4 puan
+- **Ortalama skor**: 0.0 puan
 - **100+ puan alan tarih sayısı**: 7 adet
 - **50+ puan alan tarih sayısı**: 39 adet
+- **Resmi tatil olmayan 100+ puan**: 0 adet
 
 ### 🎊 Sonuç ve Nihai Tavsiye
 
-**🏆 WINNER: 01/01 (January)**
+**🏆 WINNER: 14/07 (July)**
+*Resmi tatil olmayan en optimal tarih*
 
 Bu tarih, 50 yıllık süreçte en fazla uzun tatil garantisi sunan optimal seçimdir. 
-50 yıl boyunca extended holiday block içinde yer alarak,
-ortalama 20.8 günlük tatil imkanı sağlamaktadır.
+17 yıl boyunca extended holiday block içinde yer alarak,
+ortalama 20.1 günlük tatil imkanı sağlamaktadır.
 
-**Alternatif seçenekler**: 23/04 ve 01/05 tarihleri de güçlü alternatiflerdir.
+**Alternatif seçenekler**: 30/04 ve 02/01 tarihleri de güçlü alternatiflerdir.
+
+**Resmi tatil seçenekleri**: Eğer resmi tatil tarihi tercih edilirse, en iyi seçenekler:
+- 01/01 (January) - 200 puan
+- 23/04 (April) - 200 puan
 
 *"Aşkın en güzel günü, her yıl en uzun tatille kutlansın!" 💕*
 
 ---
-*Rapor oluşturma tarihi: 13/07/2025 02:02:41*
+*Rapor oluşturma tarihi: 13/07/2025 02:56:08*
