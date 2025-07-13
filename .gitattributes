@@ -1,2 +1,16 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# HTML dosyalarını GitHub'ın dil istatistiklerinden çıkar
+*.html linguist-generated=true
+*.htm linguist-generated=true
+
+# Python'u ana dil olarak zorla
+*.py linguist-language=Python
+
+# Markdown dosyalarını dokümantasyon olarak işaretle
+*.md linguist-documentation=true
+
+# CSV dosyalarını data olarak işaretle
+*.csv linguist-generated=true
+
+# Diğer dosya türlerini hariç tut
+*.txt linguist-generated=true
+*.log linguist-generated=true
